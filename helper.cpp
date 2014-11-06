@@ -26,7 +26,7 @@ namespace Helper
         std::vector<std::string> tempVec = split(inputStr, ' ');
         std::vector<int> resultVec;
 
-        for(int i=0; i<tempVec.size(); i++)
+        for(int i=0; i<(int)tempVec.size(); i++)
             resultVec.push_back(std::stoi(tempVec[i]));
 
         return resultVec;

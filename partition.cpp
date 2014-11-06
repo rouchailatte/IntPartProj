@@ -83,5 +83,13 @@ QTableWidget* Partition::makeTable()
       }
   }
 
+  for(int i=0; i<length; i++)
+    partTable->setRowHeight(i, 10);
+
+  for(int i=0; i<width; i++)
+    partTable->setColumnWidth(i, 10);
+
+  partTable->horizontalHeader()->hide();
+  partTable->verticalHeader()->hide();
   return partTable;
 }
