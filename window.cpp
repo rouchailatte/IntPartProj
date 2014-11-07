@@ -10,6 +10,10 @@ Window::Window(QWidget *parent) :
     newButton = new QPushButton("New");
     shiftInput = new QLineEdit;
     shiftButton = new QPushButton("Shift");
+    stretchInput = new QLineEdit;
+    stretchButton = new QPushButton("Stretch");
+
+    resetButton = new QPushButton("Reset");
     pGroup = new QGroupBox;
     tGroup = new QGroupBox;
     lLay = new QVBoxLayout;
@@ -18,9 +22,11 @@ Window::Window(QWidget *parent) :
     lSp = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tGroup->setSizePolicy(*lSp);
 
-    connect(moveButton, SIGNAL(clicked()), SLOT(slotMoveExtractInput()));
-    connect(newButton, SIGNAL(clicked()), SLOT(slotNewExtractInput()));
-    connect(shiftButton, SIGNAL(clicked()), SLOT(slotShiftExtractInput()));
+    connect(moveButton, SIGNAL(clicked()), SLOT(slotMove()));
+    connect(newButton, SIGNAL(clicked()), SLOT(slotNew()));
+    connect(shiftButton, SIGNAL(clicked()), SLOT(slotShift()));
+    connect(stretchButton, SIGNAL(clicked()), SLOT(slotStretch()));
+    connect(resetButton, SIGNAL(clicked()), SLOT(reset()));
 
 //  Layout stuff
 
@@ -33,7 +39,10 @@ Window::Window(QWidget *parent) :
     lLay->addWidget(moveButton);
     lLay->addWidget(shiftInput);
     lLay->addWidget(shiftButton);
+    lLay->addWidget(stretchInput);
+    lLay->addWidget(stretchButton);
 
+    lLay->addWidget(resetButton);
     tGroup->setLayout(lLay);
     pGroup->setLayout(rLay);
 
@@ -46,23 +55,34 @@ Window::Window(QWidget *parent) :
 
 void Window::refresh()
 {
-    rLay->addWidget(part.back()->makeTable());
+    if(!part.empty())
+        rLay->addWidget(part.back()->makeTable());
+    else
+    {
+        QLayoutItem *child;
+        while ((child = rLay->takeAt(0)) != 0) {
+            delete child->widget();
+            delete child;
+        }
+    }
     pGroup->setLayout(rLay);
     mLay->addWidget(pGroup);
     setLayout(mLay);
 }
 
 
-void Window::slotMoveExtractInput()
+void Window::slotMove()
 {
     std::string tempInput = (moveInput->text()).toStdString();
     std::vector<int> inputVec = Helper::inputParser(tempInput);
     Partition* after_move = new Partition(part.back()->move(inputVec[0], inputVec[1]));
     part.push_back(after_move);
+    moveInput->setText("");
+
     refresh();
 }
 
-void Window::slotNewExtractInput()
+void Window::slotNew()
 {
     std::string tempInput = (newInput->text()).toStdString();
     std::vector<int> inputVec = Helper::inputParser(tempInput);
@@ -70,15 +90,38 @@ void Window::slotNewExtractInput()
     inputVec.erase(inputVec.begin());
 
     part.push_back(new Partition(inputInt, inputVec));
+    newInput->setText("");
 
     refresh();
 }
 
-void Window::slotShiftExtractInput()
+void Window::slotShift()
 {
     std::string tempInput = (shiftInput->text()).toStdString();
     std::vector<std::vector<int> > mat = Helper::strToMatrix(tempInput);
     Partition* after_shift = new Partition(part.back()->shift(mat));
     part.push_back(after_shift);
+    shiftInput->setText("");
+
+    refresh();
+}
+
+void Window::slotStretch()
+{
+    std::string tempInput = (stretchInput->text()).toStdString();
+    std::vector<int> inputVec = Helper::inputParser(tempInput);
+    Partition* after_stretch = new Partition(part.back()->stretch(inputVec[0], inputVec[1]));
+    part.push_back(after_stretch);
+    stretchInput->setText("");
+
+    refresh();
+}
+
+
+
+
+void Window::reset()
+{
+    part.clear();
     refresh();
 }

@@ -24,6 +24,7 @@ public:
     QTableWidget* makeTable();
     Partition move(int, int);
     Partition shift(std::vector<std::vector<int> > inputMat);
+    Partition stretch(int, int);
 private:
     int value;
     int length;

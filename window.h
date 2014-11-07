@@ -22,6 +22,10 @@ private:
     QPushButton* newButton;
     QLineEdit* shiftInput;
     QPushButton* shiftButton;
+    QLineEdit* stretchInput;
+    QPushButton* stretchButton;
+
+    QPushButton* resetButton;
     QGroupBox* pGroup;
     QGroupBox* tGroup;
     QVBoxLayout* lLay;
@@ -34,9 +38,11 @@ private:
 signals:
 
 public slots:
-    void slotMoveExtractInput();
-    void slotNewExtractInput();
-    void slotShiftExtractInput();
+    void reset();
+    void slotMove();
+    void slotNew();
+    void slotShift();
+    void slotStretch();
 };
 
 #endif // WINDOW_H

@@ -77,30 +77,8 @@ std::vector<std::vector<int> > Partition::getPos()
 
 
 
-
 Partition Partition::move(int x, int y)
 {
-//  Partition newPartition(*this);
-//  if(x>0)
-//  {
-//    for(int i=0; i<newPartition.length; i++)
-//    {
-//      for(int j=0; j<x; j++)
-//          newPartition.partitionElement[i].insert(newPartition.partitionElement[i].begin(), 0);
-//    }
-//  }
-//  newPartition.width += x;
-//  if(y > 0)
-//  {
-//    for(int k=0; k<y; k++)
-//    {
-//      std::vector<bool> emptyRow(newPartition.width);
-//      newPartition.partitionElement.insert(newPartition.partitionElement.begin(), emptyRow);
-//    }
-//  }
-//  newPartition.length += y;
-//  return newPartition;
-
     std::vector<int> row(getPos()[0]);
     std::vector<int> col(getPos()[1]);
 
@@ -108,6 +86,34 @@ Partition Partition::move(int x, int y)
     {
         row[i] += y;
         col[i] += x;
+    }
+
+    std::vector<std::vector<int> > tempVec;
+    tempVec.push_back(row);
+    tempVec.push_back(col);
+    Partition resultPart(tempVec);
+    return resultPart;
+}
+
+Partition Partition::stretch(int k, int l)
+{
+    std::vector<int> row(getPos()[0]);
+    std::vector<int> col(getPos()[1]);
+
+    for(int i=0; i<(int)row.size(); i++)
+    {
+        ++row[i];
+        ++col[i];
+    }
+    for(int i=0; i<(int)row.size(); i++)
+    {
+        row[i] *= k;
+        col[i] /= l;
+    }
+    for(int i=0; i<(int)row.size(); i++)
+    {
+        --row[i];
+        --col[i];
     }
 
     std::vector<std::vector<int> > tempVec;
