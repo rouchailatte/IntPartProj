@@ -27,7 +27,6 @@ public:
 private:
     int value;
     int length;
-    int largestPartition;
     int width;
     std::vector<int> partition;
     std::vector<std::vector<bool> > partitionElement;

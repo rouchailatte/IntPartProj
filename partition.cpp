@@ -5,7 +5,6 @@ Partition::Partition(const Partition& inputPartition)
 {
   value = inputPartition.value;
   length = inputPartition.length;
-  largestPartition = inputPartition.largestPartition;
   partitionElement = inputPartition.partitionElement;
   width = inputPartition.width;
   partition = inputPartition.partition;
@@ -15,8 +14,7 @@ Partition::Partition(int inputValue, std::vector<int> inputPartition)
 {
   value = inputValue;
   length = (int)inputPartition.size();
-  largestPartition = inputPartition[0];
-  width = largestPartition;
+  width = inputPartition[0];
   partition = inputPartition;
 
   for(int i=0; i<length; i++)
@@ -146,8 +144,11 @@ Partition Partition::shift(std::vector<std::vector<int> > inputMat)
     // need to decrement every element in newRow and newCol since the Partition constructor needs it starting from 0 instead of 1
     for(int i=0; i<(int)newRow.size(); i++)
     {
-        --newRow[i];
-        --newCol[i];
+        if(newRow[i] != 0 && newCol[i] != 0)  // cannot decrement 0 by 1, if 0 then 0
+        {
+            --newRow[i];
+            --newCol[i];
+        }
     }
 
     std::vector<std::vector<int> > tempVec;
