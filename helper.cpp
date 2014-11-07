@@ -31,4 +31,15 @@ namespace Helper
 
         return resultVec;
     }
+
+    std::vector<std::vector<int> > strToMatrix(std::string inputStr)
+    {
+        std::vector<int> tempVec = Helper::inputParser(inputStr);
+        std::vector<int> firstRow(tempVec.begin(), tempVec.begin()+2);
+        std::vector<int> secondRow(tempVec.begin()+2, tempVec.end());
+        std::vector<std::vector<int> > m;
+        m.push_back(firstRow);
+        m.push_back(secondRow);
+        return m;
+    }
 }

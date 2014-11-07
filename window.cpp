@@ -8,6 +8,8 @@ Window::Window(QWidget *parent) :
     moveButton = new QPushButton("Move");
     newInput = new QLineEdit;
     newButton = new QPushButton("New");
+    shiftInput = new QLineEdit;
+    shiftButton = new QPushButton("Shift");
     pGroup = new QGroupBox;
     tGroup = new QGroupBox;
     lLay = new QVBoxLayout;
@@ -18,6 +20,7 @@ Window::Window(QWidget *parent) :
 
     connect(moveButton, SIGNAL(clicked()), SLOT(slotMoveExtractInput()));
     connect(newButton, SIGNAL(clicked()), SLOT(slotNewExtractInput()));
+    connect(shiftButton, SIGNAL(clicked()), SLOT(slotShiftExtractInput()));
 
 //  Layout stuff
 
@@ -28,6 +31,8 @@ Window::Window(QWidget *parent) :
     lLay->addWidget(newButton);
     lLay->addWidget(moveInput);
     lLay->addWidget(moveButton);
+    lLay->addWidget(shiftInput);
+    lLay->addWidget(shiftButton);
 
     tGroup->setLayout(lLay);
     pGroup->setLayout(rLay);
@@ -54,7 +59,6 @@ void Window::slotMoveExtractInput()
     std::vector<int> inputVec = Helper::inputParser(tempInput);
     Partition* after_move = new Partition(part.back()->move(inputVec[0], inputVec[1]));
     part.push_back(after_move);
-    std::cout << part.size() << std::endl;
     refresh();
 }
 
@@ -67,5 +71,14 @@ void Window::slotNewExtractInput()
 
     part.push_back(new Partition(inputInt, inputVec));
 
+    refresh();
+}
+
+void Window::slotShiftExtractInput()
+{
+    std::string tempInput = (shiftInput->text()).toStdString();
+    std::vector<std::vector<int> > mat = Helper::strToMatrix(tempInput);
+    Partition* after_shift = new Partition(part.back()->shift(mat));
+    part.push_back(after_shift);
     refresh();
 }
