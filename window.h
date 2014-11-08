@@ -26,6 +26,7 @@ private:
     QPushButton* stretchButton;
     QLineEdit* cutInput;
     QPushButton* cutButton;
+    QPushButton* pasteButton;
 
     QPushButton* resetButton;
     QGroupBox* pGroup;
@@ -46,6 +47,7 @@ public slots:
     void slotShift();
     void slotStretch();
     void slotCut();
+    void slotPaste();
 };
 
 #endif // WINDOW_H

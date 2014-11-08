@@ -245,6 +245,7 @@ Partition Partition::paste(Partition* prevPart)
 QTableWidget* Partition::makeTable()
 {
   QTableWidget* partTable = new QTableWidget(length, width);
+  partTable->
   for(int i=0; i<length; i++)
   {
       for(int j=0; j<width; j++)
