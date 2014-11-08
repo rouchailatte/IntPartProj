@@ -12,6 +12,8 @@ Window::Window(QWidget *parent) :
     shiftButton = new QPushButton("Shift");
     stretchInput = new QLineEdit;
     stretchButton = new QPushButton("Stretch");
+    cutInput = new QLineEdit;
+    cutButton = new QPushButton("Cut");
 
     resetButton = new QPushButton("Reset");
     pGroup = new QGroupBox;
@@ -26,6 +28,7 @@ Window::Window(QWidget *parent) :
     connect(newButton, SIGNAL(clicked()), SLOT(slotNew()));
     connect(shiftButton, SIGNAL(clicked()), SLOT(slotShift()));
     connect(stretchButton, SIGNAL(clicked()), SLOT(slotStretch()));
+    connect(cutButton, SIGNAL(clicked()), SLOT(slotCut()));
     connect(resetButton, SIGNAL(clicked()), SLOT(reset()));
 
 //  Layout stuff
@@ -41,6 +44,8 @@ Window::Window(QWidget *parent) :
     lLay->addWidget(shiftButton);
     lLay->addWidget(stretchInput);
     lLay->addWidget(stretchButton);
+    lLay->addWidget(cutInput);
+    lLay->addWidget(cutButton);
 
     lLay->addWidget(resetButton);
     tGroup->setLayout(lLay);
@@ -55,16 +60,15 @@ Window::Window(QWidget *parent) :
 
 void Window::refresh()
 {
-    if(!part.empty())
-        rLay->addWidget(part.back()->makeTable());
-    else
+    QLayoutItem *child;
+    while ((child = rLay->takeAt(0)) != 0)
     {
-        QLayoutItem *child;
-        while ((child = rLay->takeAt(0)) != 0) {
-            delete child->widget();
-            delete child;
-        }
+        delete child->widget();
+        delete child;
     }
+    for(int i=0; i<(int)part.size(); i++)
+        rLay->addWidget(part[i]->makeTable());
+
     pGroup->setLayout(rLay);
     mLay->addWidget(pGroup);
     setLayout(mLay);
@@ -117,7 +121,18 @@ void Window::slotStretch()
     refresh();
 }
 
+void Window::slotCut()
+{
+    std::string tempInput = (cutInput->text()).toStdString();
+    std::vector<int> inputVec = Helper::inputParser(tempInput);
 
+    std::vector<Partition*> after_cut = part.back()->cut(inputVec[0], inputVec[1], inputVec[2]);
+    part.push_back((after_cut[0]));
+    part.push_back((after_cut[1]));
+    cutInput->setText("");
+
+    refresh();
+}
 
 
 void Window::reset()

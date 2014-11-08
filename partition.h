@@ -25,6 +25,7 @@ public:
     Partition move(int, int);
     Partition shift(std::vector<std::vector<int> > inputMat);
     Partition stretch(int, int);
+    std::vector<Partition*> cut(int, int, int);
 private:
     int value;
     int length;

@@ -164,6 +164,68 @@ Partition Partition::shift(std::vector<std::vector<int> > inputMat)
     return resultPart;
 }
 
+std::vector<Partition*> Partition::cut(int a, int b, int c)
+{
+    std::vector<int> row(getPos()[0]);
+    std::vector<int> col(getPos()[1]);
+
+    for(int i=0; i<(int)row.size(); i++)
+    {
+        ++row[i];
+        ++col[i];
+    }
+
+    std::vector<int> lowerRow;
+    std::vector<int> lowerCol;
+    std::vector<int> upperRow;
+    std::vector<int> upperCol;
+
+    for(int i=0; i<(int)row.size(); i++)
+    {
+        if(a*row[i] + b*col[i] >= c)
+        {
+            upperRow.push_back(row[i]);
+            upperCol.push_back(col[i]);
+        }
+        else
+        {
+            lowerRow.push_back(row[i]);
+            lowerCol.push_back(col[i]);
+        }
+    }
+
+    for(int i=0; i<lowerRow.size(); i++)
+    {
+        --lowerRow[i];
+        --lowerCol[i];
+    }
+    for(int i=0; i<upperRow.size(); i++)
+    {
+        --upperRow[i];
+        --upperCol[i];
+    }
+    std::vector<std::vector<int> > tempUpper;
+    tempUpper.push_back(upperRow);
+    tempUpper.push_back(upperCol);
+    Partition* resultUpper = new Partition(tempUpper);
+
+    std::vector<std::vector<int> > tempLower;
+    tempLower.push_back(lowerRow);
+    tempLower.push_back(lowerCol);
+    Partition* resultLower = new Partition(tempLower);
+
+    std::vector<Partition*> resultPart;
+    resultPart.push_back(resultUpper);
+    resultPart.push_back(resultLower);
+
+    return resultPart;
+}
+
+
+
+
+
+
 QTableWidget* Partition::makeTable()
 {
   QTableWidget* partTable = new QTableWidget(length, width);
