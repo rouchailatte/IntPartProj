@@ -182,7 +182,7 @@ std::vector<Partition*> Partition::cut(int a, int b, int c)
 
     for(int i=0; i<(int)row.size(); i++)
     {
-        if(a*row[i] + b*col[i] >= c)
+        if(a*row[i] + b*col[i] <= c)
         {
             upperRow.push_back(row[i]);
             upperCol.push_back(col[i]);

@@ -14,10 +14,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     window.cpp \
     partition.cpp \
-    helper.cpp
+    helper.cpp \
+    partwidget.cpp \
+    partthread.cpp
 
 HEADERS  += mainwindow.h \
     window.h \
-    partition.h
+    partition.h \
+    partwidget.h \
+    partthread.h
 
 FORMS    += mainwindow.ui

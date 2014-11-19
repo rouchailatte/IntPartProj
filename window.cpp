@@ -151,3 +151,36 @@ void Window::reset()
     part.clear();
     refresh();
 }
+
+// construct part Widget in here, not in the actual computation function
+// keep things as they are in Partition.cpp
+
+/*
+ * Example
+ * PartThread p;
+ * // in new
+ * // don't forget to setLay() for partWidget in every transformation
+ * p = new PartThread(after_new_partWidget);
+ * p.setLay();
+ *
+ * // in cut
+ *
+ * for(int i=0; i<p.partWidgets.size(); ++i)
+ * {
+ *  if(partWidgets[i].mainCheckButton.ischecked())
+ *      partWidget* inputPartWidget = new partWidget(partWidgets[i]);
+ * }
+ *
+ * partWidget* upper = after_cut[0];
+ * partWidget* lower = after_cut[1];
+ *
+ * ++p.maxLevel;
+ * upper.setLevel(p.maxLevel);
+ * lower.setLevel(p.maxLevel);
+ *
+ * p.addPart(upper);
+ * p.addPart(lower);
+ *
+ * p.setLay();
+ *
+ */
