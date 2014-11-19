@@ -3,6 +3,8 @@
 PartThread::PartThread(QWidget *parent) :
     QWidget(parent)
 {
+    mainLay = new QHBoxLayout;
+    maxLevel = -1;
 }
 
 PartThread::PartThread(PartWidget* inputPartWidget)
@@ -24,12 +26,22 @@ PartThread::PartThread(PartWidget* inputPartWidget)
 
 }
 
+int PartThread::getMaxLevel()
+{
+    return maxLevel;
+}
+
+void PartThread::incrementMaxLevel()
+{
+    ++maxLevel;
+}
+
 void PartThread::addPart(PartWidget* inputPartWidget)
 {
     partWidgets.push_back(inputPartWidget);
 
     // update the numbers of layout and groupbox according to the level
-    while(maxLevel > partLayouts.size() - 1)
+    while(maxLevel > (int)partLayouts.size() - 1)
     {
         partLayouts.push_back(new QVBoxLayout);
         partBoxes.push_back(new QGroupBox);
@@ -43,11 +55,21 @@ void PartThread::setLay()
         for(int j=0; j < (int)partWidgets.size(); ++j)
         {
             if(partWidgets[j]->getLevel() == i)
+            {
                 partLayouts[i]->addWidget(partWidgets[j]);
+            }
         }
         // set this layout to this group box
         partBoxes[i]->setLayout(partLayouts[i]);
         mainLay->addWidget(partBoxes[i]);
     }
     this->setLayout(mainLay);
+}
+
+void PartThread::reset()
+{
+    maxLevel = -1;
+    partWidgets.clear();
+    partLayouts.clear();
+    partBoxes.clear();
 }

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "partthread.h"
+#include "partwidget.h"
 
 class Window : public QWidget
 {
@@ -15,6 +17,8 @@ class Window : public QWidget
 public:
     explicit Window(QWidget *parent = 0);
     void refresh();
+    std::vector<Partition*> getInputPartition();
+    int getInputLevel();
 private:
     QLineEdit* moveInput;
     QPushButton* moveButton;
@@ -36,7 +40,8 @@ private:
     QHBoxLayout* mLay;
     QSizePolicy* lSp;
     QSizePolicy* rSp;
-    std::vector<Partition*> part;
+//    std::vector<Partition*> part;
+    PartThread* p;
 
 signals:
 

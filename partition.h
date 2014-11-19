@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <string>
 #include <map>
+#include <iostream>
 class Partition
 {
 public:
@@ -22,11 +23,14 @@ public:
     std::vector<std::vector<int> > getPos();
 
     QTableWidget* makeTable();
-    Partition move(int, int);
-    Partition shift(std::vector<std::vector<int> > inputMat);
-    Partition stretch(int, int);
+    Partition* move(int, int);
+    Partition* shift(std::vector<std::vector<int> > inputMat);
+    Partition* stretch(int, int);
     std::vector<Partition*> cut(int, int, int);
-    Partition paste(Partition*);
+    Partition* paste(Partition*);
+
+    // for debugging
+    void printGraph();
 private:
     int value;
     int length;

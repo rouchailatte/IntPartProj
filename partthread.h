@@ -16,6 +16,12 @@ public:
     PartThread(PartWidget*);
     void addPart(PartWidget*);
     void setLay();
+    int getMaxLevel();
+    void incrementMaxLevel();
+    void reset();
+    std::vector<PartWidget*> partWidgets;
+    std::vector<QVBoxLayout*> partLayouts;
+    std::vector<QGroupBox*> partBoxes;
 
     // put everything together, can also serve as refresh
 
@@ -24,9 +30,7 @@ public:
 private:
    QHBoxLayout* mainLay;
    int maxLevel;
-   std::vector<PartWidget*> partWidgets;
-   std::vector<QVBoxLayout*> partLayouts;
-   std::vector<QGroupBox*> partBoxes;
+
 signals:
 
 public slots:

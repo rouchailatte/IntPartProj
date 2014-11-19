@@ -23,6 +23,11 @@ int PartWidget::getLevel()
     return level;
 }
 
+Partition* PartWidget::getPartition()
+{
+    return intPart;
+}
+
 void PartWidget::setLevel(int inputLevel)
 {
     level = inputLevel;
@@ -30,13 +35,12 @@ void PartWidget::setLevel(int inputLevel)
 
 void PartWidget::updateTable()
 {
-    delete mainTable;
-    mainTable = new QTableWidget(intPart->makeTable());
+    mainTable = intPart->makeTable();
 }
 
 void PartWidget::setLay()
 {
-    updateTable();
+    mainTable = intPart->makeTable();
     mainLay->addWidget(mainTable);
     mainLay->addWidget(mainCheckBox);
     this->setLayout(mainLay);

@@ -77,7 +77,7 @@ std::vector<std::vector<int> > Partition::getPos()
 
 
 
-Partition Partition::move(int x, int y)
+Partition* Partition::move(int x, int y)
 {
     std::vector<int> row(getPos()[0]);
     std::vector<int> col(getPos()[1]);
@@ -91,11 +91,11 @@ Partition Partition::move(int x, int y)
     std::vector<std::vector<int> > tempVec;
     tempVec.push_back(row);
     tempVec.push_back(col);
-    Partition resultPart(tempVec);
+    Partition* resultPart = new Partition(tempVec);
     return resultPart;
 }
 
-Partition Partition::stretch(int k, int l)
+Partition* Partition::stretch(int k, int l)
 {
     std::vector<int> row(getPos()[0]);
     std::vector<int> col(getPos()[1]);
@@ -119,11 +119,11 @@ Partition Partition::stretch(int k, int l)
     std::vector<std::vector<int> > tempVec;
     tempVec.push_back(row);
     tempVec.push_back(col);
-    Partition resultPart(tempVec);
+    Partition* resultPart = new Partition(tempVec);
     return resultPart;
 }
 
-Partition Partition::shift(std::vector<std::vector<int> > inputMat)
+Partition* Partition::shift(std::vector<std::vector<int> > inputMat)
 {
     std::vector<int> row(getPos()[0]);
     std::vector<int> col(getPos()[1]);
@@ -160,7 +160,7 @@ Partition Partition::shift(std::vector<std::vector<int> > inputMat)
     std::vector<std::vector<int> > tempVec;
     tempVec.push_back(newRow);
     tempVec.push_back(newCol);
-    Partition resultPart(tempVec);
+    Partition* resultPart = new Partition(tempVec);
     return resultPart;
 }
 
@@ -221,7 +221,7 @@ std::vector<Partition*> Partition::cut(int a, int b, int c)
     return resultPart;
 }
 
-Partition Partition::paste(Partition* prevPart)
+Partition* Partition::paste(Partition* prevPart)
 {
     std::vector<int> row(getPos()[0]);
     std::vector<int> col(getPos()[1]);
@@ -237,7 +237,7 @@ Partition Partition::paste(Partition* prevPart)
     std::vector<std::vector<int> > tempVec;
     tempVec.push_back(row);
     tempVec.push_back(col);
-    Partition resultPart(tempVec);
+    Partition* resultPart = new Partition(tempVec);
     return resultPart;
 }
 
@@ -273,4 +273,18 @@ QTableWidget* Partition::makeTable()
   partTable->horizontalHeader()->hide();
   partTable->verticalHeader()->hide();
   return partTable;
+}
+
+
+void Partition::printGraph()
+{
+    for(int i=0; i<partitionElement.size(); ++i)
+    {
+        for(int j=0; j<partitionElement[i].size(); ++j)
+        {
+            if(partitionElement[i][j])
+                std::cout << "*  ";
+        }
+        std::cout << std::endl;
+    }
 }
