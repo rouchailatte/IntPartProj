@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <numeric>
 class Partition
 {
 public:
@@ -26,8 +27,13 @@ public:
     Partition* move(int, int);
     Partition* shift(std::vector<std::vector<int> > inputMat);
     Partition* stretch(int, int);
+    std::vector<Partition*> shred();
     std::vector<Partition*> cut(int, int, int);
     Partition* paste(Partition*);
+    Partition* shiftLeft();
+    Partition* shiftUp();
+    Partition* shiftLeftUp();
+    Partition* transpose();
 
     // for debugging
     void printGraph();

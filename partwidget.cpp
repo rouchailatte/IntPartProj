@@ -45,3 +45,5 @@ void PartWidget::setLay()
     mainLay->addWidget(mainCheckBox);
     this->setLayout(mainLay);
 }
+
+

@@ -68,6 +68,13 @@ void PartThread::setLay()
 
 void PartThread::reset()
 {
+    QLayoutItem *child;
+    while ((child = mainLay->takeAt(0)) != 0)
+    {
+        delete child->widget();
+        delete child;
+    }
+
     maxLevel = -1;
     partWidgets.clear();
     partLayouts.clear();

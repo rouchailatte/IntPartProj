@@ -14,7 +14,7 @@ Partition::Partition(int inputValue, std::vector<int> inputPartition)
 {
   value = inputValue;
   length = (int)inputPartition.size();
-  width = inputPartition[0];
+  width = *std::max_element(inputPartition.begin(), inputPartition.end());
   partition = inputPartition;
 
   for(int i=0; i<length; i++)
@@ -92,6 +92,7 @@ Partition* Partition::move(int x, int y)
     tempVec.push_back(row);
     tempVec.push_back(col);
     Partition* resultPart = new Partition(tempVec);
+
     return resultPart;
 }
 
@@ -107,13 +108,14 @@ Partition* Partition::stretch(int k, int l)
     }
     for(int i=0; i<(int)row.size(); i++)
     {
-        row[i] *= k;
-        col[i] /= l;
+        row[i] = k*row[i] - k + 1;
+        col[i] = l*col[i] - l + 1;
     }
     for(int i=0; i<(int)row.size(); i++)
     {
         --row[i];
-        --col[i];
+        if(col[i] > 0)
+            --col[i];
     }
 
     std::vector<std::vector<int> > tempVec;
@@ -141,8 +143,8 @@ Partition* Partition::shift(std::vector<std::vector<int> > inputMat)
 
     for(int i=0; i<(int)row.size(); i++)
     {
-        int newRowElem = row[i]*inputMat[0][0] + col[i]*inputMat[1][0];
-        int newColElem = row[i]*inputMat[0][1] + col[i]*inputMat[1][1];
+        int newRowElem = row[i]*inputMat[0][0] + col[i]*inputMat[0][1];
+        int newColElem = row[i]*inputMat[1][0] + col[i]*inputMat[1][1];
         newRow.push_back(newRowElem);
         newCol.push_back(newColElem);
     }
@@ -161,6 +163,49 @@ Partition* Partition::shift(std::vector<std::vector<int> > inputMat)
     tempVec.push_back(newRow);
     tempVec.push_back(newCol);
     Partition* resultPart = new Partition(tempVec);
+    return resultPart;
+}
+
+std::vector<Partition*> Partition::shred()
+{
+    std::vector<int> row(getPos()[0]);
+    std::vector<int> col(getPos()[1]);
+
+    std::vector<int> upperRow;
+    std::vector<int> upperCol;
+
+    std::vector<int> lowerRow;
+    std::vector<int> lowerCol;
+
+    for(int i=0; i<row.size(); ++i)
+    {
+        if(col[i]%2 == 0)
+        {
+            upperRow.push_back(row[i]);
+            upperCol.push_back(col[i]);
+        }
+        else
+        {
+            lowerRow.push_back(row[i]);
+            lowerCol.push_back(col[i]);
+        }
+    }
+    std::vector<std::vector<int> > tempUpper;
+    tempUpper.push_back(upperRow);
+    tempUpper.push_back(upperCol);
+
+    Partition* resultUpper = new Partition(tempUpper);
+
+    std::vector<std::vector<int> > tempLower;
+    tempLower.push_back(lowerRow);
+    tempLower.push_back(lowerCol);
+
+    Partition* resultLower = new Partition(tempLower);
+
+    std::vector<Partition*> resultPart;
+    resultPart.push_back(resultUpper);
+    resultPart.push_back(resultLower);
+
     return resultPart;
 }
 
@@ -241,6 +286,47 @@ Partition* Partition::paste(Partition* prevPart)
     return resultPart;
 }
 
+
+Partition* Partition::shiftLeft()
+{
+    std::vector<int> count(length);
+
+    for(int i=0; i<partitionElement.size(); ++i)
+    {
+        for(int j=0; j<partitionElement[i].size(); ++j)
+        {
+            if(partitionElement[i][j])
+                ++count[i];
+        }
+    }
+    int sum = std::accumulate(count.begin(),count.end(),0);
+    Partition* resultPart = new Partition(sum, count);
+
+    return resultPart;
+}
+
+Partition* Partition::shiftUp()
+{
+    return this->transpose()->shiftLeft()->transpose();
+}
+
+Partition* Partition::shiftLeftUp()
+{
+    return this->shiftLeft()->shiftUp();
+}
+
+Partition* Partition::transpose()
+{
+    std::vector<int> newRow(getPos()[1]);
+    std::vector<int> newCol(getPos()[0]);
+
+    std::vector<std::vector<int> >resultVec;
+    resultVec.push_back(newRow);
+    resultVec.push_back(newCol);
+
+    Partition* resultPart = new Partition(resultVec);
+    return resultPart;
+}
 
 QTableWidget* Partition::makeTable()
 {

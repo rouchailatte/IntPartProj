@@ -30,29 +30,41 @@ Window::Window(QWidget *parent) :
     newButton = new QPushButton("New");
     shiftInput = new QLineEdit;
     shiftButton = new QPushButton("Shift");
+    shredButton = new QPushButton("Shred");
     stretchInput = new QLineEdit;
     stretchButton = new QPushButton("Stretch");
     cutInput = new QLineEdit;
     cutButton = new QPushButton("Cut");
     pasteButton = new QPushButton("Paste");
+    shiftLeftButton = new QPushButton("Shift Left");
+    transposeButton = new QPushButton("Transpose");
+    shiftUpButton = new QPushButton("Shift Up");
+    shiftLeftUpButton = new QPushButton("Shift Left Up");
 
     resetButton = new QPushButton("Reset");
     pGroup = new QGroupBox;
     tGroup = new QGroupBox;
+    t2Group = new QGroupBox;
     lLay = new QVBoxLayout;
+    l2Lay = new QVBoxLayout;
     rLay = new QHBoxLayout;
     mLay = new QHBoxLayout;
     lSp = new QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tGroup->setSizePolicy(*lSp);
+    t2Group->setSizePolicy(*lSp);
 
     connect(moveButton, SIGNAL(clicked()), SLOT(slotMove()));
     connect(newButton, SIGNAL(clicked()), SLOT(slotNew()));
     connect(shiftButton, SIGNAL(clicked()), SLOT(slotShift()));
+    connect(shredButton, SIGNAL(clicked()), SLOT(slotShred()));
     connect(stretchButton, SIGNAL(clicked()), SLOT(slotStretch()));
     connect(cutButton, SIGNAL(clicked()), SLOT(slotCut()));
     connect(pasteButton, SIGNAL(clicked()), SLOT(slotPaste()));
     connect(resetButton, SIGNAL(clicked()), SLOT(reset()));
-
+    connect(shiftLeftButton, SIGNAL(clicked()), SLOT(slotShiftLeft()));
+    connect(shiftUpButton, SIGNAL(clicked()), SLOT(slotShiftUp()));
+    connect(shiftLeftUpButton, SIGNAL(clicked()), SLOT(slotShiftLeftUp()));
+    connect(transposeButton, SIGNAL(clicked()), SLOT(slotTranspose()));
 //  Layout stuff
 
     rLay->addWidget(p);
@@ -64,18 +76,34 @@ Window::Window(QWidget *parent) :
     lLay->addWidget(moveButton);
     lLay->addWidget(shiftInput);
     lLay->addWidget(shiftButton);
+    lLay->addWidget(shredButton);
     lLay->addWidget(stretchInput);
     lLay->addWidget(stretchButton);
     lLay->addWidget(cutInput);
     lLay->addWidget(cutButton);
     lLay->addWidget(pasteButton);
+    l2Lay->addWidget(shiftLeftButton);
+    l2Lay->addWidget(shiftUpButton);
+    l2Lay->addWidget(shiftLeftUpButton);
+    l2Lay->addWidget(transposeButton);
+    l2Lay->addWidget(resetButton);
 
-    lLay->addWidget(resetButton);
+    l2Lay->setSpacing(8);
+
     tGroup->setLayout(lLay);
+    t2Group->setLayout(l2Lay);
     pGroup->setLayout(rLay);
+
+    tGroup->setTitle("Basic Transformation");
+    t2Group->setTitle("Helper Transformation");
+    tGroup->setFixedWidth(120);
+    t2Group->setFixedWidth(120);
+
+    pGroup->setTitle("Integer Partitions");
 
     mLay->addWidget(pGroup);
     mLay->addWidget(tGroup);
+    mLay->addWidget(t2Group);
 
     setLayout(mLay);
 }
@@ -116,6 +144,15 @@ int Window::getInputLevel()
     for(int i=0; i<(int)p->partWidgets.size(); ++i)
         if(p->partWidgets[i]->mainCheckBox->isChecked())
             return p->partWidgets[i]->getLevel();
+}
+
+void Window::toggleCheckBoxes()
+{
+    for(int i=0; i<(int)p->partWidgets.size(); ++i)
+    {
+        if(p->partWidgets[i]->mainCheckBox->isChecked())
+            p->partWidgets[i]->mainCheckBox->toggle();
+    }
 }
 
 void Window::slotNew()
@@ -167,6 +204,7 @@ void Window::slotMove()
 
 //    part.push_back(after_move);
     moveInput->setText("");
+    this->toggleCheckBoxes();
     this->update();
 }
 
@@ -190,7 +228,32 @@ void Window::slotShift()
     p->setLay();
 //    part.push_back(after_shift);
     shiftInput->setText("");
+    this->toggleCheckBoxes();
+    this->update();
+}
 
+void Window::slotShred()
+{
+    std::vector<Partition*> after_shred = this->getInputPartition()[0] -> shred();
+
+    PartWidget* upper = new PartWidget(after_shred[0]);
+    PartWidget* lower = new PartWidget(after_shred[1]);
+
+    upper->setLay();
+    lower->setLay();
+
+    int selectedLevel = this->getInputLevel();
+    if(selectedLevel == p->getMaxLevel())
+        p->incrementMaxLevel();
+    upper->setLevel(selectedLevel+1);
+    lower->setLevel(selectedLevel+1);
+
+    p->addPart(upper);
+    p->addPart(lower);
+
+    p->setLay();
+
+    this->toggleCheckBoxes();
     this->update();
 }
 
@@ -213,7 +276,7 @@ void Window::slotStretch()
 
 //    part.push_back(after_stretch);
     stretchInput->setText("");
-
+    this->toggleCheckBoxes();
     this->update();
 }
 
@@ -244,7 +307,7 @@ void Window::slotCut()
 //    part.push_back((after_cut[0]));
 //    part.push_back((after_cut[1]));
     cutInput->setText("");
-
+    this->toggleCheckBoxes();
     this->update();
 }
 
@@ -263,6 +326,73 @@ void Window::slotPaste()
 
     p->addPart(after_past_pw);
     p->setLay();
+    this->toggleCheckBoxes();
+    this->update();
+}
+
+void Window::slotShiftLeft()
+{
+    PartWidget* after_shift_left = new PartWidget(this->getInputPartition()[0]->shiftLeft());
+    after_shift_left->setLay();
+
+    int selectedLevel = this->getInputLevel();
+    if(selectedLevel == p->getMaxLevel())
+        p->incrementMaxLevel();
+    after_shift_left->setLevel(selectedLevel+1);
+
+    p->addPart(after_shift_left);
+    p->setLay();
+    this->toggleCheckBoxes();
+    this->update();
+}
+
+void Window::slotShiftUp()
+{
+    PartWidget* after_shift_up = new PartWidget(this->getInputPartition()[0]->shiftUp());
+    after_shift_up->setLay();
+
+    int selectedLevel = this->getInputLevel();
+    if(selectedLevel == p->getMaxLevel())
+        p->incrementMaxLevel();
+    after_shift_up->setLevel(selectedLevel+1);
+
+    p->addPart(after_shift_up);
+    p->setLay();
+    this->toggleCheckBoxes();
+    this->update();
+}
+
+
+void Window::slotShiftLeftUp()
+{
+    PartWidget* after_shift_left_up = new PartWidget(this->getInputPartition()[0]->shiftLeftUp());
+    after_shift_left_up->setLay();
+
+    int selectedLevel = this->getInputLevel();
+    if(selectedLevel == p->getMaxLevel())
+        p->incrementMaxLevel();
+    after_shift_left_up->setLevel(selectedLevel+1);
+
+    p->addPart(after_shift_left_up);
+    p->setLay();
+    this->toggleCheckBoxes();
+    this->update();
+}
+
+void Window::slotTranspose()
+{
+    PartWidget* after_transpose = new PartWidget(this->getInputPartition()[0]->transpose());
+    after_transpose->setLay();
+
+    int selectedLevel = this->getInputLevel();
+    if(selectedLevel == p->getMaxLevel())
+        p->incrementMaxLevel();
+    after_transpose->setLevel(selectedLevel+1);
+
+    p->addPart(after_transpose);
+    p->setLay();
+
+    this->toggleCheckBoxes();
 
     this->update();
 }
@@ -271,6 +401,7 @@ void Window::reset()
 {
 //    part.clear();
     p->reset();
+    p->setLay();
     this->update();
 }
 
